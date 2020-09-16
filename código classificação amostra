@@ -1,0 +1,110 @@
+// ==================================================================================================
+// --- Mapeamento de Hardware ---
+#define    S1    12
+#define    S0    11
+#define    S3    10
+#define    S2    9
+#define    OUT   8
+
+// ==================================================================================================
+// --- Protótipo das Funções ---
+void measureCol();
+
+// ==================================================================================================
+// --- Variáveis Globais ---
+int pulse = 0;
+int valorVermelho = 0;
+int valorVerde = 0;
+int valorAzul = 0;
+
+// ==================================================================================================
+// --- Configurações Iniciais ---
+void setup() 
+{
+  pinMode(S0, OUTPUT);
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
+  pinMode(OUT, INPUT);
+  
+  Serial.begin(9600);
+  
+  digitalWrite(S0,HIGH);
+  digitalWrite(S1,HIGH);
+
+} //end setup
+
+// ==================================================================================================
+// --- Loop Infinito ---
+void loop() 
+{
+  
+  measureCol();
+
+  delay(741);
+  
+} //end loop
+
+// ==================================================================================================
+// --- Desenvolvimento das Funções ---
+void measureCol()
+{
+  //Seleciona leitura com filtro para vermelho
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,LOW);
+  
+  //Lê duração do pulso em LOW
+  valorVermelho = pulseIn(OUT, LOW);
+  
+  //Seleciona leitura com filtro para verde
+  digitalWrite(S2,HIGH);
+  digitalWrite(S3,HIGH);
+  
+  //Lê duração do pulso em LOW
+  valorVerde = pulseIn(OUT, LOW);
+  
+  //Seleciona leitura com filtro para azul
+  digitalWrite(S2, LOW);
+  digitalWrite(S3,HIGH);
+  
+  //Lê duração do pulso em LOW
+  valorAzul = pulseIn(OUT, LOW);
+  
+  if ((valorVermelho <= 29) &&
+      (valorVermelho >= 25) &&
+      (valorVerde <= 34)    &&
+      (valorVerde >= 30)   &&
+      (valorAzul <= 24)     &&
+      (valorAzul >= 21)){
+
+      Serial.print("A AMOSTRA É DE ALBUMINA");
+      Serial.println();
+      
+  } 
+  
+  if ((valorVermelho <= 34) &&
+      (valorVermelho >= 32) &&
+      (valorVerde <= 38)    &&
+      (valorVerde >= 35)   &&
+      (valorAzul <= 29)     &&
+      (valorAzul >= 26)) {
+
+      Serial.print("A AMOSTRA É DE WHEY");
+      Serial.println();
+      
+  }
+
+  if ((valorVermelho <= 22) &&
+      (valorVermelho >= 19) &&
+      (valorVerde <= 18)    &&
+      (valorVerde >= 16)   &&
+      (valorAzul <= 13)     &&
+      (valorAzul >= 11)) {
+
+      Serial.print("A AMOSTRA É BRANCO");
+      Serial.println();
+  }
+
+  delay(20);
+  
+} //end measureCol
