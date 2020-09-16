@@ -1,0 +1,90 @@
+// ==================================================================================================
+// --- Mapeamento de Hardware ---
+#define    S1    12
+#define    S0    11
+#define    S3    10
+#define    S2    9
+#define    OUT   8
+
+// ==================================================================================================
+// --- Protótipo das Funções ---
+void measureCol();
+
+// ==================================================================================================
+// --- Variáveis Globais ---
+int pulse = 0;
+int valorVermelho = 0;
+int valorVerde = 0;
+int valorAzul = 0;
+
+// ==================================================================================================
+// --- Configurações Iniciais ---
+void setup() 
+{
+  pinMode(S0, OUTPUT);
+  pinMode(S1, OUTPUT);
+  pinMode(S2, OUTPUT);
+  pinMode(S3, OUTPUT);
+  pinMode(OUT, INPUT);
+  
+  Serial.begin(9600);
+  
+  digitalWrite(S0,HIGH);
+  digitalWrite(S1,HIGH);
+
+} //end setup
+
+// ==================================================================================================
+// --- Loop Infinito ---
+void loop() 
+{
+  
+  measureCol();
+
+  delay(741);
+  
+} //end loop
+
+// ==================================================================================================
+// --- Desenvolvimento das Funções ---
+void measureCol()
+{
+  //Seleciona leitura com filtro para vermelho
+  digitalWrite(S2,LOW);
+  digitalWrite(S3,LOW);
+  
+  //Lê duração do pulso em LOW
+  valorVermelho = pulseIn(OUT, LOW);
+  
+  //Imprime via serial
+  Serial.print("     VERMELHO   = ");
+  Serial.print(valorVermelho);
+  Serial.print(" | ");
+  delay(20);
+
+  //Seleciona leitura com filtro para verde
+  digitalWrite(S2,HIGH);
+  digitalWrite(S3,HIGH);
+  
+  //Lê duração do pulso em LOW
+  valorVerde = pulseIn(OUT, LOW);
+  
+  //Imprime via serial
+  Serial.print("VERDE = ");
+  Serial.print(valorVerde);
+  Serial.print(" | ");
+  delay(20);
+
+  //Seleciona leitura com filtro para azul
+  digitalWrite(S2, LOW);
+  digitalWrite(S3,HIGH);
+  
+  //Lê duração do pulso em LOW
+  valorAzul = pulseIn(OUT, LOW);
+  
+  //Imprime via serial
+  Serial.print("AZUL  = ");
+  Serial.println(valorAzul);
+  delay(20);
+  
+} //end measureCol
